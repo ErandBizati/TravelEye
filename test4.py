@@ -49,8 +49,11 @@ def start_button():
         else:
             scan_result += f"No signal detected at {freq} MHz.\n"
 
-    # Update the result label in the result frame and show the result frame
-    result_label.config(text=scan_result, font=large_font)
+    # Clear the text box and insert the new result
+    result_textbox.config(state=tk.NORMAL)
+    result_textbox.delete(1.0, tk.END)  # Clear previous content
+    result_textbox.insert(tk.END, scan_result)
+    result_textbox.config(state=tk.DISABLED)  # Disable editing of the text box
     show_frame(result_frame)
 
 
@@ -79,11 +82,27 @@ back_button = tk.Button(about_frame, text="Back", command=lambda: show_frame(mai
 back_button.pack(pady=20)
 
 # Result frame widgets
-result_label = tk.Label(result_frame, text="", font=large_font)  # This will display the scan result
+result_label = tk.Label(result_frame, text="Scan Results", font=large_font)
 result_label.pack(pady=20)
 
-exit_button = tk.Button(result_frame, text="Exit", command=lambda: show_frame(main_menu_frame), width=20, height=2, font=button_font)
-exit_button.pack(pady=20)
+# Scrollbar for the scan results
+result_textbox = tk.Text(result_frame, wrap="word", height=20, width=80, font=large_font)
+result_textbox.config(state=tk.DISABLED)  # Initially disable the textbox
+result_textbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+scrollbar = tk.Scrollbar(result_frame, command=result_textbox.yview)
+scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+result_textbox.config(yscrollcommand=scrollbar.set)
+
+# Buttons in the result frame
+button_frame = tk.Frame(result_frame)
+button_frame.pack(pady=10)
+
+scan_again_button = tk.Button(button_frame, text="Scan Again", command=start_button, width=20, height=2, font=button_font)
+scan_again_button.pack(side=tk.LEFT, padx=5)
+
+back_button = tk.Button(button_frame, text="Back", command=lambda: show_frame(main_menu_frame), width=20, height=2, font=button_font)
+back_button.pack(side=tk.LEFT, padx=5)
 
 # Packing the frames and making them fill the entire window
 for frame in (main_menu_frame, help_frame, about_frame, result_frame):
