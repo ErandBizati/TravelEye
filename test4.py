@@ -4,11 +4,6 @@ from MultiSigDetection import SEARCHLIST, TRESHOLD, scan, sdr  # Import function
 # Create the main window
 root = tk.Tk()
 root.geometry("1024x600")
-root.attributes("-fullscreen", True)  # Enable fullscreen mode
-
-# Define a larger font for better touch interaction
-large_font = ("Helvetica", 20)
-button_font = ("Helvetica", 18)
 
 # Creating frames for different menus
 main_menu_frame = tk.Frame(root)
@@ -21,11 +16,11 @@ def show_frame(frame):
     frame.tkraise()
 
 # Main menu widgets
-label = tk.Label(main_menu_frame, text="Travel Eye", font=large_font)
-label.pack(pady=20)
+label = tk.Label(main_menu_frame, text="Travel Eye")
+label.pack(pady=10)
 
-status_label = tk.Label(main_menu_frame, text="", font=large_font)
-status_label.pack(pady=20)
+status_label = tk.Label(main_menu_frame, text="")
+status_label.pack(pady=10)
 
 # Global variable to store scan result
 scan_result = ""
@@ -58,35 +53,35 @@ def start_button():
 
 
 # Buttons for the main menu
-start_button = tk.Button(main_menu_frame, text="Start Scan", command=start_button, width=20, height=2, font=button_font)
-start_button.pack(pady=20)
+start_button = tk.Button(main_menu_frame, text="Start Scan", command=start_button, width=20, height=2)
+start_button.pack(pady=10)
 
-help_button = tk.Button(main_menu_frame, text="Help/Instructions", command=lambda: show_frame(help_frame), width=20, height=2, font=button_font)
-help_button.pack(pady=20)
+help_button = tk.Button(main_menu_frame, text="Help/Instructions", command=lambda: show_frame(help_frame), width=20, height=2)
+help_button.pack(pady=10)
 
-about_button = tk.Button(main_menu_frame, text="About", command=lambda: show_frame(about_frame), width=20, height=2, font=button_font)
-about_button.pack(pady=20)
+about_button = tk.Button(main_menu_frame, text="About", command=lambda: show_frame(about_frame), width=20, height=2)
+about_button.pack(pady=10)
 
 # Help/Instructions frame widgets
-instructions_label = tk.Label(help_frame, text="Instructions: \n1. Press Start to scan\n2. The scan result will be shown.", font=large_font)
+instructions_label = tk.Label(help_frame, text="Instructions: \n1. Press Start to scan\n2. The scan result will be shown.")
 instructions_label.pack(pady=40)
 
-back_button = tk.Button(help_frame, text="Back", command=lambda: show_frame(main_menu_frame), width=20, height=2, font=button_font)
-back_button.pack(pady=20)
+back_button = tk.Button(help_frame, text="Back", command=lambda: show_frame(main_menu_frame), width=20, height=2)
+back_button.pack(pady=10)
 
 # About frame widgets
-about_label = tk.Label(about_frame, text="Travel Eye v1.3\nA tool for scanning RF signals.", font=large_font)
+about_label = tk.Label(about_frame, text="Travel Eye v1.3\nA tool for scanning RF signals.")
 about_label.pack(pady=40)
 
-back_button = tk.Button(about_frame, text="Back", command=lambda: show_frame(main_menu_frame), width=20, height=2, font=button_font)
-back_button.pack(pady=20)
+back_button = tk.Button(about_frame, text="Back", command=lambda: show_frame(main_menu_frame), width=20, height=2)
+back_button.pack(pady=10)
 
 # Result frame widgets
-result_label = tk.Label(result_frame, text="Scan Results", font=large_font)
-result_label.pack(pady=20)
+result_label = tk.Label(result_frame, text="Scan Results")
+result_label.pack(pady=10)
 
 # Scrollbar for the scan results
-result_textbox = tk.Text(result_frame, wrap="word", height=20, width=80, font=large_font)
+result_textbox = tk.Text(result_frame, wrap="word", height=20, width=80)
 result_textbox.config(state=tk.DISABLED)  # Initially disable the textbox
 result_textbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
@@ -98,10 +93,10 @@ result_textbox.config(yscrollcommand=scrollbar.set)
 button_frame = tk.Frame(result_frame)
 button_frame.pack(pady=10)
 
-scan_again_button = tk.Button(button_frame, text="Scan Again", command=start_button, width=20, height=2, font=button_font)
+scan_again_button = tk.Button(button_frame, text="Scan Again", command=start_button, width=20, height=2)
 scan_again_button.pack(side=tk.LEFT, padx=5)
 
-back_button = tk.Button(button_frame, text="Back", command=lambda: show_frame(main_menu_frame), width=20, height=2, font=button_font)
+back_button = tk.Button(button_frame, text="Back", command=lambda: show_frame(main_menu_frame), width=20, height=2)
 back_button.pack(side=tk.LEFT, padx=5)
 
 # Packing the frames and making them fill the entire window
