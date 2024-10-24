@@ -26,11 +26,12 @@ status_label.pack(pady=10)
 # Global variable to store scan result
 scan_result = ""
 
-
 # Function to start the scan and directly show the result
 def start_button():
     global scan_result
     scan_result = ""  # Clear previous scan results
+    result_textbox.delete(1.0, tk.END)  # Clear previous content in the text box
+
     detected_signals = []
 
     # Loop through SEARCHLIST frequencies and scan
@@ -46,8 +47,7 @@ def start_button():
             scan_result += f"No signal detected at {freq} MHz.\n"
 
     # Update the result text box in the result frame and show the result frame
-    result_textbox.delete(1.0, tk.END)  # Clear previous results
-    result_textbox.insert(tk.END, scan_result)
+    result_textbox.insert(tk.END, scan_result)  # Insert the new scan results
     show_frame(result_frame)
 
 
