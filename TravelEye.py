@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter import scrolledtext
 from PIL import Image, ImageTk
 import MultiSigDetection  # Importing the MultiSigDetection module
+import multipleChoiceMenu
 
 # Simulating SEARCHLIST and TRESHOLD from MultiSigDetection
 SEARCHLIST = MultiSigDetection.SEARCHLIST
@@ -22,6 +23,12 @@ main_menu_frame = tk.Frame(root, bg="black")
 help_frame = tk.Frame(root, bg="black")
 about_frame = tk.Frame(root, bg="black")
 result_frame = tk.Frame(root, bg="black")  # New frame to show the scan results
+
+global inputList
+inputList = []
+#go to multiple choice menu
+def go_to_menu(inputList):
+    multipleChoiceMenu.menu(inputList)
 
 # Function to switch frames
 def show_frame(frame):
@@ -60,6 +67,7 @@ def start_scan():
             if result:
                 for detected in result:
                     freq_found, power = detected
+                    inputList.append((freq_found, power))
                     scan_result += f"Detected signal at {freq_found:.2f} MHz with power {power:.2f} dB\n"
             else:
                 scan_result += f"No signal detected at {freq} MHz.\n"
@@ -108,8 +116,11 @@ result_textbox = scrolledtext.ScrolledText(result_frame, width=100, height=20, f
 result_textbox.pack(pady=10)
 
 # "Scan Again" button in the result frame
-scan_again_button = tk.Button(result_frame, text="Scan Again", command=start_scan, **button_style)
-scan_again_button.pack(pady=10)
+#scan_again_button = tk.Button(result_frame, text="Scan Again", command=start_scan, **button_style)
+#scan_again_button.pack(pady=10)
+
+next_button = tk.Button(result_frame, text="Next", command=lambda: go_to_menu(inputList), **button_style)
+next_button.pack(pady=10)
 
 # Back button in result frame to return to main menu
 back_button = tk.Button(result_frame, text="Back", command=lambda: show_frame(main_menu_frame), **button_style)
