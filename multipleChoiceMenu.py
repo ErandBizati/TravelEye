@@ -1,18 +1,20 @@
 #runTests.py
 
-import TestFunctions as testF
+#import TestFunctions as testF
+
+import MultiSigDetection
 import tkinter as tk
 import sys
 import ast
 
 SEARCHLIST = MultiSigDetection.SEARCHLIST
 TRESHOLD = MultiSigDetection.TRESHOLD
-inputList = []
+#inputList = []
 
 
-if len(sys.argv) > 1:
+#if len(sys.argv) > 1:
   # Read the argument and convert it to a list
-  inputList = ast.literal_eval(sys.argv[1])
+#  inputList = ast.literal_eval(sys.argv[1])
 
 #menu(inputList)
 
@@ -24,11 +26,11 @@ for freq in SEARCHLIST:
     if result:
       for detected in result:
         freq_found, power = detected
-        inputList.append(freq_found, power)
+        inputList.append((freq_found, power))
     
 
   except Exception as e:
-    scan_result += f"Error scanning {freq} MHz: {str(e)}\n"
+    #scan_result += f"Error scanning {freq} MHz: {str(e)}\n"
     break
 
 
@@ -340,9 +342,12 @@ def menu(inputList):
     secondLabel = tk.Label(root, text=resultString, **text_style)
     secondLabel.pack(pady=5)
   elif float(result[0]) == -1:
-    label = tk.Label(root, text="No signal was found.\nThe likelihood of a device is very low.\nYou can either scan again or exit.")
+    label = tk.Label(root, text="No signal was found.\nThe likelihood of a device is very low.\nYou can either scan again or exit.", **text_style)
+    label.pack(pady=5)
 
   if result[0] == -1:
+    buttons = tk.Frame(root)
+    buttons.pack(pady=25)
     reset = tk.Button(buttons, text="Rescan", font=('Times New Roman', 18), command=rescan)
     reset.pack(side=tk.LEFT, padx=25)
     quit_button = tk.Button(buttons, text="Quit", font=('Times New Roman', 18), command=root.destroy)
@@ -364,6 +369,6 @@ def menu(inputList):
 
     root.mainloop()
 
-
-menu(inputList)
-
+if __name__ == "__main__":
+  inputList = []
+  menu(inputList)
