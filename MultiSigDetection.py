@@ -4,8 +4,8 @@ from rtlsdr import *
 import math
 import numpy
 
-SEARCHLIST = [433, 49, 139, 143, 146, 169, 175]
-TRESHOLD = -45
+SEARCHLIST = [433.92, 49, 139, 143, 146, 169, 175,315]
+TRESHOLD = -15
 
 #initializes rtlsdr
 sdr = RtlSdr()
@@ -15,13 +15,13 @@ sdr.sample_rate = 2.4e6
 sdr.gain = 4
 
 def scan(rtl, freq, threshold):
-	center = (freq * 1000000) + 0.1
+	center = (freq + 0.024) * 1000000
 	
 	sdr.center_freq = center
-	samples = sdr.read_samples(256)
+	samples = sdr.read_samples(256*100)
 	
 	#use matplotlib to estimate and plot the PSD
-	power,freqFound =psd(samples, NFFT=256, Fs=sdr.sample_rate/1e6, Fc=sdr.center_freq/1e6)
+	power,freqFound =psd(samples, NFFT=100, Fs=sdr.sample_rate/1e6, Fc=sdr.center_freq/1e6)
 	
 	#converts power data to decibels
 	powerdB = [ 10*math.log10(x) for x in power ]
@@ -34,7 +34,25 @@ def scan(rtl, freq, threshold):
 		if(x[0] == center):
 			found.remove(x)
 	
-	return(found)
+	#this list will contain all found freq, with similar freq filtered out, keeping the strongest
+	filtered = []
+	i = 0
+	
+	while i < len(found):
+		currentFreq, currentPower = found[i]
+		maxPower = currentPower
+		maxIndex = i
+		
+		j = i + 1
+		while j < len(found) and found[j][0] - currentFreq <= 0.1:
+			if found[j][1] > maxPower:
+				maxPower = found[j][i]
+				maxIndex = j
+			j += 1
+		filtered.append(found[maxIndex])
+		i = j
+	
+	return(filtered)
 	
 detected = []
 
