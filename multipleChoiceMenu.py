@@ -1,5 +1,6 @@
-#runTests.py
-
+#---------------------------
+#File: MultipleChoiceMeny.py
+#---------------------------
 #import TestFunctions as testF
 
 import MultiSigDetection
