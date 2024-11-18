@@ -1,143 +1,270 @@
 #-------------------#
-#File: TravelEye.py #
+# File: TravelEye.py #
 #-------------------#
 
-import tkinter as tk
-from tkinter import scrolledtext
-from PIL import Image, ImageTk
-import MultiSigDetection  # Importing the MultiSigDetection module
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QScrollArea, QHBoxLayout, QStackedWidget
+from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtGui import QCursor
+import MultiSigDetection
 import multipleChoiceMenu
 
 # Simulating SEARCHLIST and TRESHOLD from MultiSigDetection
 SEARCHLIST = MultiSigDetection.SEARCHLIST
 TRESHOLD = MultiSigDetection.TRESHOLD
 
-# Create the main window
-root = tk.Tk()
-root.attributes("-fullscreen", True)  # Enable full-screen mode
-root.configure(bg="black")  # Set background color to black
-root.configure(cursor="none") # Hides mouse cursor
+class TravelEye(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("TravelEye")
+        self.setGeometry(0, 0, 1024, 600)  # Adjust for 1024x600 resolution
+        self.setStyleSheet("background-color: black; color: lime;")
 
-# Creating frames for different menus
-main_menu_frame = tk.Frame(root, bg="black")
-help_frame = tk.Frame(root, bg="black")
-about_frame = tk.Frame(root, bg="black")
-result_frame = tk.Frame(root, bg="black")  # New frame to show the scan results
+        self.inputList = []
+        self.recursive_timer = QTimer()  # Initialize QTimer for recursive scanning
+        self.recursive_timer.timeout.connect(self.update_recursive_scan)  # Connect timer to update function
+        self.current_freq = None  # Track the frequency being recursively scanned
 
-global inputList
-inputList = []
-#go to multiple choice menu
-def go_to_menu(inputList):
-    multipleChoiceMenu.menu(inputList)
+        # Create a stacked widget to hold all frames
+        self.stacked_widget = QStackedWidget()
+        self.setCentralWidget(self.stacked_widget)
 
-# Function to switch frames
-def show_frame(frame):
-    frame.tkraise()
+        # Initialize UI components
+        self.initUI()
 
-# Themed text style
-text_style = {"fg": "lime", "bg": "black", "font": ("Courier", 16, "bold")}
-title_text_style = {"fg": "lime", "bg": "black", "font": ("Courier", 28, "bold")}
+    def initUI(self):
+        # Main menu
+        self.main_menu_widget = QWidget()
+        self.main_menu_layout = QVBoxLayout()
+        self.main_menu_layout.setSpacing(20)  # Increase spacing for touch-friendliness
+        self.main_menu_widget.setLayout(self.main_menu_layout)
 
-status_label = tk.Label(main_menu_frame, text="", **text_style)
-status_label.pack(pady=5)
+        title = QLabel("TravelEye")
+        title.setStyleSheet("font-family: Courier; font-size: 32px; font-weight: bold; color: lime;")
+        title.setAlignment(Qt.AlignCenter)
+        self.main_menu_layout.addWidget(title)
 
-# Main menu widgets
-label = tk.Label(main_menu_frame, text="TravelEye", **title_text_style)
-label.pack(pady=5)
+        start_button = QPushButton("Start Scan")
+        start_button.clicked.connect(self.start_scan)
+        self.set_button_style(start_button)
+        self.main_menu_layout.addWidget(start_button)
 
-status_label = tk.Label(main_menu_frame, text="", **text_style)
-status_label.pack(pady=5)
+        help_button = QPushButton("Help/Instructions")
+        help_button.clicked.connect(lambda: self.stacked_widget.setCurrentWidget(self.help_widget))
+        self.set_button_style(help_button)
+        self.main_menu_layout.addWidget(help_button)
 
-# Global variable to store scan result
-scan_result = ""
+        about_button = QPushButton("About")
+        about_button.clicked.connect(lambda: self.stacked_widget.setCurrentWidget(self.about_widget))
+        self.set_button_style(about_button)
+        self.main_menu_layout.addWidget(about_button)
 
-# Function to start the scan and display the result
-def start_scan():
-    global scan_result
-    scan_result = ""  # Clear previous scan results
-    result_textbox.delete(1.0, tk.END)  # Clear previous content in the text box
-    
-    # Perform the scan
-    for freq in SEARCHLIST:
-        try:
-            # Call the scan function from MultiSigDetection for each frequency
-            result = MultiSigDetection.scan(MultiSigDetection.sdr, freq, TRESHOLD)
+        quit_button = QPushButton("Quit")
+        quit_button.clicked.connect(self.close)
+        self.set_button_style(quit_button)
+        self.main_menu_layout.addWidget(quit_button)
 
-            # If any signals were detected, append them to the result
-            if result:
-                for detected in result:
-                    freq_found, power = detected
-                    inputList.append((freq_found, power))
-                    scan_result += f"Detected signal at {freq_found:.2f} MHz with power {power:.2f} dB\n"
-            else:
-                scan_result += f"No signal detected at {freq} MHz.\n"
+        # Help frame
+        self.help_widget = QWidget()
+        help_layout = QVBoxLayout()
+        help_layout.setSpacing(20)
 
-        except Exception as e:
-            scan_result += f"Error scanning {freq} MHz: {str(e)}\n"
-            break  # Stop if there's an issue with the RTL-SDR setup
+        help_text = QLabel("Instructions:\n1. Press Start to scan\n2. Tap a frequency to view details.")
+        help_text.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
+        help_layout.addWidget(help_text)
 
-    # Insert the new scan results and switch to the result frame
-    result_textbox.insert(tk.END, scan_result)  # Insert the new scan results
-    show_frame(result_frame)  # Display the result frame
+        help_back_button = QPushButton("Back")
+        help_back_button.clicked.connect(lambda: self.stacked_widget.setCurrentWidget(self.main_menu_widget))
+        self.set_button_style(help_back_button)
+        help_layout.addWidget(help_back_button)
+        self.help_widget.setLayout(help_layout)
 
-# Themed button style
-button_style = {"fg": "lime", "bg": "black", "font": ("Courier", 14, "bold"), "activebackground": "green", "activeforeground": "black", "width": 30, "height": 4, "bd": 2}
+        # About frame
+        self.about_widget = QWidget()
+        about_layout = QVBoxLayout()
+        about_layout.setSpacing(20)
 
-# Main menu buttons
-start_button = tk.Button(main_menu_frame, text="Start Scan", command=start_scan, **button_style)
-start_button.pack(pady=10)
+        about_text = QLabel("Travel Eye v1.3\nA tool for scanning RF signals.")
+        about_text.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
+        about_layout.addWidget(about_text)
 
-help_button = tk.Button(main_menu_frame, text="Help/Instructions", command=lambda: show_frame(help_frame), **button_style)
-help_button.pack(pady=10)
+        about_back_button = QPushButton("Back")
+        about_back_button.clicked.connect(lambda: self.stacked_widget.setCurrentWidget(self.main_menu_widget))
+        self.set_button_style(about_back_button)
+        about_layout.addWidget(about_back_button)
+        self.about_widget.setLayout(about_layout)
 
-about_button = tk.Button(main_menu_frame, text="About", command=lambda: show_frame(about_frame), **button_style)
-about_button.pack(pady=10)
+        # Result frame with scrollable area
+        self.result_widget = QWidget()
+        result_layout = QVBoxLayout()
+        result_layout.setSpacing(20)
 
-# Quit button on the main menu
-quit_button = tk.Button(main_menu_frame, text="Quit", command=root.destroy, **button_style)
-quit_button.pack(pady=10)
+        # Labels for total signals detected and strongest signal
+        self.total_signals_label = QLabel("Total Signals Detected: 0")
+        self.total_signals_label.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
+        result_layout.addWidget(self.total_signals_label)
 
-# Help/Instructions frame widgets
-instructions_label = tk.Label(help_frame, text="Instructions:\n1. Press Start to scan\n2. The scan result will be shown.", **text_style)
-instructions_label.pack(pady=40)
+        self.strongest_signal_label = QLabel("Strongest Signal: N/A")
+        self.strongest_signal_label.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
+        result_layout.addWidget(self.strongest_signal_label)
 
-back_button = tk.Button(help_frame, text="Back", command=lambda: show_frame(main_menu_frame), **button_style)
-back_button.pack(pady=10)
+        # Scroll area for frequency buttons
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_content = QWidget()
+        self.scroll_layout = QVBoxLayout()
+        self.scroll_layout.setSpacing(15)
+        self.scroll_content.setLayout(self.scroll_layout)
+        self.scroll_area.setWidget(self.scroll_content)
+        
+        result_layout.addWidget(self.scroll_area)
 
-# About frame widgets
-about_label = tk.Label(about_frame, text="Travel Eye v1.3\nA tool for scanning RF signals.", **text_style)
-about_label.pack(pady=40)
+        # "Scan Again" and "Back" buttons in result screen
+        button_layout = QHBoxLayout()
+        
+        scan_again_button = QPushButton("Scan Again")
+        scan_again_button.clicked.connect(self.start_scan)
+        self.set_button_style(scan_again_button)
+        button_layout.addWidget(scan_again_button)
 
-back_button = tk.Button(about_frame, text="Back", command=lambda: show_frame(main_menu_frame), **button_style)
-back_button.pack(pady=10)
+        result_back_button = QPushButton("Back")
+        result_back_button.clicked.connect(lambda: self.stacked_widget.setCurrentWidget(self.main_menu_widget))
+        self.set_button_style(result_back_button)
+        button_layout.addWidget(result_back_button)
 
-# Result frame widgets
-result_textbox = scrolledtext.ScrolledText(result_frame, width=100, height=20, fg="lime", bg="black", font=("Courier", 12))  # Scrollable textbox for results
-result_textbox.pack(pady=10)
+        result_layout.addLayout(button_layout)
+        self.result_widget.setLayout(result_layout)
 
-# "Scan Again" button in the result frame
-#scan_again_button = tk.Button(result_frame, text="Scan Again", command=start_scan, **button_style)
-#scan_again_button.pack(pady=10)
+        # Recursive scan frame
+        self.recursive_widget = QWidget()
+        recursive_layout = QVBoxLayout()
+        recursive_layout.setSpacing(20)
 
-next_button = tk.Button(result_frame, text="Next", command=lambda: go_to_menu(inputList), **button_style)
-next_button.pack(pady=10)
+        self.recursive_label = QLabel("")
+        self.recursive_label.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
+        recursive_layout.addWidget(self.recursive_label)
 
-# Back button in result frame to return to main menu
-back_button = tk.Button(result_frame, text="Back", command=lambda: show_frame(main_menu_frame), **button_style)
-back_button.pack(pady=10)
+        next_button = QPushButton("Next")
+        next_button.clicked.connect(self.go_to_menu)
+        self.set_button_style(next_button)
+        recursive_layout.addWidget(next_button)
 
-# Packing the frames and making them fill the entire window
-for frame in (main_menu_frame, help_frame, about_frame, result_frame):
-    frame.grid(row=0, column=0, sticky='nsew')
+        back_button_recursive = QPushButton("Back")
+        back_button_recursive.clicked.connect(self.stop_recursive_scan)
+        self.set_button_style(back_button_recursive)
+        recursive_layout.addWidget(back_button_recursive)
 
-# Configure grid layout to expand the frames
-root.grid_rowconfigure(0, weight=1)
-root.grid_columnconfigure(0, weight=1)
+        self.recursive_widget.setLayout(recursive_layout)
 
-# Show the main menu by default
-show_frame(main_menu_frame)
+        # Add all widgets to the stacked widget
+        self.stacked_widget.addWidget(self.main_menu_widget)
+        self.stacked_widget.addWidget(self.help_widget)
+        self.stacked_widget.addWidget(self.about_widget)
+        self.stacked_widget.addWidget(self.result_widget)
+        self.stacked_widget.addWidget(self.recursive_widget)
 
-root.after(100, lambda: root.attributes("-fullscreen", True))
-root.configure(cursor="none")
+    def set_button_style(self, button):
+        # Button styles with a green border and solid green background when pressed, no focus outline
+        button.setStyleSheet(
+            """
+            QPushButton {
+                font-family: Courier;
+                font-size: 20px; 
+                font-weight: bold; 
+                color: lime; 
+                background-color: black; 
+                padding: 20px; 
+                border: 2px solid lime;
+                outline: none;
+            }
+            QPushButton:pressed {
+                background-color: green;
+                color: black;
+                border: 2px solid green;
+                outline: none;
+            }
+            """
+        )
 
-root.mainloop()
+    def go_to_menu(self):
+        multipleChoiceMenu.menu([(self.recursive_label.text())])
+
+    def start_scan(self):
+        # Clear previous scan results
+        self.inputList = []
+        self.total_signals_label.setText("Total Signals Detected: 0")
+        self.strongest_signal_label.setText("Strongest Signal: N/A")
+
+        for i in reversed(range(self.scroll_layout.count())): 
+            widget = self.scroll_layout.itemAt(i).widget()
+            if widget is not None:
+                widget.deleteLater()
+
+        max_power = None
+        max_signal = None
+
+        # Perform scan and create frequency buttons
+        for freq in SEARCHLIST:
+            try:
+                result = MultiSigDetection.scan(MultiSigDetection.sdr, freq, TRESHOLD)
+                if result:
+                    for detected in result:
+                        freq_found, power = detected
+                        self.inputList.append((freq_found, power))
+
+                        # Track the strongest signal
+                        if max_power is None or power > max_power:
+                            max_power = power
+                            max_signal = freq_found
+
+                        # Create button for each detected frequency
+                        freq_button = QPushButton(f"{freq_found:.2f} MHz | {power:.2f} dB")
+                        freq_button.clicked.connect(lambda _, f=freq_found: self.start_recursive_scan(f))
+                        self.set_button_style(freq_button)
+                        self.scroll_layout.addWidget(freq_button)
+            except Exception as e:
+                error_label = QLabel(f"Error scanning {freq} MHz")
+                error_label.setStyleSheet("font-family: Courier; color: red; font-size: 16px;")
+                self.scroll_layout.addWidget(error_label)
+
+        # Update total signals and strongest signal
+        self.total_signals_label.setText(f"Total Signals Detected: {len(self.inputList)}")
+        if max_signal is not None:
+            self.strongest_signal_label.setText(f"Strongest Signal: {max_signal:.2f} MHz | {max_power:.2f} dB")
+
+        self.stacked_widget.setCurrentWidget(self.result_widget)
+
+    def start_recursive_scan(self, freq):
+        if self.recursive_timer.isActive():
+            self.recursive_timer.stop()
+
+        self.current_freq = freq
+        self.recursive_label.setText(f"Scanning {freq:.2f} MHz...")
+        self.stacked_widget.setCurrentWidget(self.recursive_widget)
+
+        self.recursive_timer.start(1000)
+
+    def update_recursive_scan(self):
+        if self.current_freq is None:
+            return
+
+        result = MultiSigDetection.scan(MultiSigDetection.sdr, self.current_freq, TRESHOLD)
+        if result:
+            for detected in result:
+                freq_found, power = detected
+                self.recursive_label.setText(f"Signal at {freq_found:.2f} MHz: {power:.2f} dB")
+        else:
+            self.recursive_label.setText(f"No signal detected at {self.current_freq:.2f} MHz")
+
+    def stop_recursive_scan(self):
+        if self.recursive_timer.isActive():
+            self.recursive_timer.stop()
+        self.stacked_widget.setCurrentWidget(self.result_widget)
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    app.setOverrideCursor(Qt.BlankCursor)  # Hide the cursor application-wide
+    window = TravelEye()
+    window.showFullScreen()
+    sys.exit(app.exec_())
