@@ -145,7 +145,7 @@ class TravelEye(QMainWindow):
         recursive_layout.addWidget(self.recursive_label)
 
         next_button = QPushButton("Next")
-        next_button.clicked.connect(lambda: self.menu(inputList))
+        next_button.clicked.connect(lambda: self.menu(self.inputList))
         self.set_button_style(next_button)
         recursive_layout.addWidget(next_button)
 
@@ -156,26 +156,6 @@ class TravelEye(QMainWindow):
 
         self.recursive_widget.setLayout(recursive_layout)
 
-        #Multiple Choice Menu
-        self.mcm = QWidget()
-        mcm_layout = QVBoxLayout()
-        mcm_layout.setSpacing(20)
-
-        self.mcm_label = QLabel("")
-        self.recursive_label.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
-        mcm_layout.addWidget(self.mcm)
-
-        yes_button = QPushButton("Yes")
-        yes_button.clicked.connect(self.go_to_menu(inputList))
-        self.set_button_style(next_button)
-        recursive_layout.addWidget(next_button)
-
-        back_button_recursive = QPushButton("Back")
-        back_button_recursive.clicked.connect(self.stop_recursive_scan)
-        self.set_button_style(back_button_recursive)
-        recursive_layout.addWidget(back_button_recursive)
-
-        self.recursive_widget.setLayout(recursive_layout)
 
         # Add all widgets to the stacked widget
         self.stacked_widget.addWidget(self.main_menu_widget)
@@ -260,7 +240,7 @@ class TravelEye(QMainWindow):
             self.recursive_timer.stop()
 
         self.current_freq = freq
-        self.inputList.append((freq_found, 'power'))
+        self.inputList.append((self.current_freq, freq, 'power'))
         self.recursive_label.setText(f"Scanning {freq:.2f} MHz...")
         self.stacked_widget.setCurrentWidget(self.recursive_widget)
 
@@ -293,7 +273,7 @@ class TravelEye(QMainWindow):
         self.mcm_label.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
         mcm_layout.addWidget(self.mcm)
 
-        self.mcm_widget.setLayout(mcm_layout)
+        self.mcm.setLayout(mcm_layout)
 
         # Define styles for text and buttons
         text_styleg = "color: lime; font-family: Courier; font-size: 16px; font-weight: bold;"
@@ -657,7 +637,6 @@ class TravelEye(QMainWindow):
             layout.addWidget(secondLabel)
             label.setText("No signal was found.\nThe likelihood of a device is very low.\nYou can either scan again or exit.")
             
-
         if result[0] == -1:
             layout = QVBoxLayout()
             question = QLabel("Something went wrong.", window)
@@ -685,7 +664,6 @@ class TravelEye(QMainWindow):
             no_button.clicked.connect(no1)
             set_button_style(no_button)
             mcm_layout.addWidget(no_button)
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
