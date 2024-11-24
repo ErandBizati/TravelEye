@@ -269,17 +269,17 @@ class TravelEye(QMainWindow):
         mcm_layout = QVBoxLayout()
         mcm_layout.setSpacing(20)
 
-        label = QLabel("hi")
+        label = QLabel("")
         #self.label.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
-        mcm_layout.addWidget(self.mcm_widget)
+        #mcm_layout.addWidget(self.mcm_widget)
         secondLabel = QLabel("")
         #self.secondLabel.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
 
         #self.mcm.setLayout(mcm_layout)
         
-        self.stacked_widget.addWidget(self.mcm_widget)
+#        self.stacked_widget.addWidget(self.mcm_widget)
         
-        self.stacked_widget.setCurrentWidget(self.mcm_widget)
+#        self.stacked_widget.setCurrentWidget(self.mcm_widget)
 
         # Define styles for text and buttons
         text_style = "color: lime; font-family: Courier; font-size: 16px; font-weight: bold;"
@@ -309,10 +309,10 @@ class TravelEye(QMainWindow):
 #                yes_button.clicked.connect(nextFreq)
 #            else:
             question.setText("If you never gave consent for a camera or microphone to be where you are,\nyou may be allowed to disable it. Look for power buttons around the device. \nIf there is not one, see if it is connected to a power source like an outlet and unplug it.\nIf none of these options are possible, your best scenario may be to physically obstruct the camera \nso it cannot see you and muffle the sound by wrapping it in something like a towel.\n If it is a microphone, muffle the sound with something like a towel or blanket and be wary.")
-            reset_button = QPushButton("Back", window)
-            reset_button.setStyleSheet(button_style)
-            reset_button.clicked.connect(self.result_widget)
-            mcm_layout.addWidget(reset_button)
+            back_button_recursive = QPushButton("Back")
+            back_button_recursive.clicked.connect(self.stop_recursive_scan)
+            self.set_button_style(back_button_recursive)
+            mcm_layout.addWidget(back_button_recursive)
 
         def noTouch():
             question.setText("If the device is a microphone, it may be impossible to stop it. \nLook for places it may be plugged into like outlets or holes in the wall and unplug it if possible.\nBe careful of what you say in the room\nIf it is a camera, try to cover the line of sight so that it cannot see you.\nIt still may be able to hear, so be careful.")
@@ -346,14 +346,14 @@ class TravelEye(QMainWindow):
 
 
         resultString = f'A frequency was found at {result[0]} MHz\n'
-        label = QLabel(resultString, window)
+        #label = QLabel(resultString, window)
 
 
 
         #list of extremely hostile frequencies
         xHostileList = [37.6000,49.8300,49.8550,49.8900,139.6000,140.0000,140.8500,143.5000,146.5350,146.5356,148.0050,164.4625,164.8625,166.6625,166.8625,168.0000,168.8000,169.4450,169.5050,170.1000,170.2450,170.3050,170.4875,170.9750,171.0450,171.1050,171.4500,171.6000,171.8250,171.8450,171.9050,172.0000,172.2000,172.8875,172.8875,173.3500,175.0200,184.8500,190.6000,203.0000,221.5000,224.5000,303.6150,303.8250,304.2450,304.2614,310.0000,314.3750,314.8500,315.0000,321.9850,391.2050,392.7280,398.6050,399.0300,399.4550,414.9800,416.2500,416.8450,418.0000,420.5440,423.1250,427.1250,427.4750,427.8250,428.6350,429.5050,433.9200,439.2500,499.9700,499.9750,673.9350,1310.0000,1350.0000,1521.3068,1572.0350]
 
-        resultString += f'A frequency was found at {result[0]} MHz\n'
+        #resultString += f'A frequency was found at {result[0]} MHz\n'
         #very long list of possibilities
         if float(result[0]) in xHostileList:
             label.setStyleSheet(text_styler)
@@ -645,7 +645,7 @@ class TravelEye(QMainWindow):
             label.setText("No signal was found.\nThe likelihood of a device is very low.\nYou can either scan again or exit.")
             
         if result[0] == -1:
-            layout = QVBoxLayout()
+            # layout = QVBoxLayout()
             question = QLabel("Something went wrong.", window)
             question.setStyleSheet(title_text_style)
             mcm_layout.addWidget(question)
@@ -657,9 +657,9 @@ class TravelEye(QMainWindow):
 
         else:
 
-            layout = QVBoxLayout()
-            question = QLabel("", window)
-            question.setStyleSheet(title_text_style)
+            #layout = QVBoxLayout()
+            question = QLabel("Can you see the device?", window)
+            question.setStyleSheet(text_style)
             mcm_layout.addWidget(question)
 
             yes_button = QPushButton("Yes")
@@ -671,6 +671,12 @@ class TravelEye(QMainWindow):
             no_button.clicked.connect(no1)
             self.set_button_style(no_button)
             mcm_layout.addWidget(no_button)
+            
+            self.mcm_widget.setLayout(mcm_layout)
+            
+            self.stacked_widget.addWidget(self.mcm_widget)
+        
+            self.stacked_widget.setCurrentWidget(self.mcm_widget)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
