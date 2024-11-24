@@ -265,15 +265,15 @@ class TravelEye(QMainWindow):
 
     def menu(self, inputList):
 
-        self.mcm = QWidget()
+        self.mcm_widget = QWidget()
         mcm_layout = QVBoxLayout()
         mcm_layout.setSpacing(20)
 
         #self.mcm_label = QLabel("")
         self.mcm_label.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
-        mcm_layout.addWidget(self.mcm)
+        mcm_layout.addWidget(self.mcm_widget)
 
-        self.mcm.setLayout(mcm_layout)
+        #self.mcm.setLayout(mcm_layout)
 
         # Define styles for text and buttons
         text_styleg = "color: lime; font-family: Courier; font-size: 16px; font-weight: bold;"
@@ -305,28 +305,28 @@ class TravelEye(QMainWindow):
             reset_button = QPushButton("Back", window)
             reset_button.setStyleSheet(button_style)
             reset_button.clicked.connect(self.result_widget)
-            layout.addWidget(reset_button)
+            mcm_layout.addWidget(reset_button)
 
         def noTouch():
             question.setText("If the device is a microphone, it may be impossible to stop it. \nLook for places it may be plugged into like outlets or holes in the wall and unplug it if possible.\nBe careful of what you say in the room\nIf it is a camera, try to cover the line of sight so that it cannot see you.\nIt still may be able to hear, so be careful.")
             reset_button = QPushButton("Back", window)
             reset_button.setStyleSheet(button_style)
             reset_button.clicked.connect(self.result_widget)
-            layout.addWidget(reset_button)
+            mcm_layout.addWidget(reset_button)
 
         def yesWindow():
             question.setText("Try to cover any windows or openings near you.\nThis may be where you are being monitored from.\nBlock your windows as well as you can.")
             reset_button = QPushButton("Back", window)
             reset_button.setStyleSheet(button_style)
             reset_button.clicked.connect(rescan)
-            layout.addWidget(reset_button)
+            mcm_layout.addWidget(reset_button)
 
         def noWindow():
             question.setText("There may be a false signal or it is well hidden. \nKeep searching or scan again.")
             reset_button = QPushButton("Back", window)
             reset_button.setStyleSheet(button_style)
             reset_button.clicked.connect(rescan)
-            layout.addWidget(reset_button)
+            mcm_layout.addWidget(reset_button)
 
 
         if len(inputList) != 0: 
@@ -350,17 +350,17 @@ class TravelEye(QMainWindow):
         #very long list of possibilities
         if float(result[0]) in xHostileList:
             label.setStyleSheet(text_styler)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: EXTREME")
 
         #20-45
         elif float(result[0]) >= 20 and float(result[0]) < 45:
             label.setStyleSheet(text_styleo)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: Medium")
             
             resultString += 'The device is likely an old camera or microphone.'
@@ -369,9 +369,9 @@ class TravelEye(QMainWindow):
         #45-50
         elif float(result[0]) >= 45 and float(result[0]) < 50:
             label.setStyleSheet(text_styler)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: EXTREME")
             
             resultString += 'This is in the range of a list of devices that can be very likely for surveillance devices. \nIt can be a camera or a microphone.'
@@ -380,9 +380,9 @@ class TravelEye(QMainWindow):
         #45-88
         elif float(result[0]) >= 45 and float(result[0]) < 88:
             label.setStyleSheet(text_styleo)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: High")
             
             resultString += 'This is in the range of a list of devices that can be very likely for surveillance devices.\n It can be a camera or a microphone.'
@@ -391,9 +391,9 @@ class TravelEye(QMainWindow):
         #88-108
         elif float(result[0]) >= 88 and float(result[0]) < 108:
             label.setStyleSheet(text_styley)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: Medium")
             
             resultString += 'The range this frequency is in is likely for eavesdropping devices \nlike microphones or crystal controlled devices.'
@@ -402,9 +402,9 @@ class TravelEye(QMainWindow):
         #108-135
         elif float(result[0]) >= 108 and float(result[0]) < 135:
             label.setStyleSheet(text_styleo)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: High")
             
             resultString += 'The range this frequency is in is likely to be a low cost device for eavesdropping. \nMicrophone is likely.'
@@ -413,9 +413,9 @@ class TravelEye(QMainWindow):
         #135-150
         elif float(result[0]) >= 135 and float(result[0]) < 150:
             label.setStyleSheet(text_styleo)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: High")
             
             resultString += 'The range this frequency is in is where thousands of eavesdropping devices are used. \nBe very wary of a microphone or other devices such as kit bugs.'
@@ -424,9 +424,9 @@ class TravelEye(QMainWindow):
         #150-175
         elif float(result[0]) >= 150 and float(result[0]) < 175:
             label.setStyleSheet(text_styler)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: EXTREME")
             
             resultString += 'The range this frequency is in is very popular for wireless microphones.'
@@ -435,9 +435,9 @@ class TravelEye(QMainWindow):
         #175-200
         elif float(result[0]) >= 175 and float(result[0]) < 200:
             label.setStyleSheet(text_styley)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: Medium")
             
             resultString += 'The range this frequency is in is popular for wireless microphones.'
@@ -446,9 +446,9 @@ class TravelEye(QMainWindow):
         #200-225
         elif float(result[0]) >= 200 and float(result[0]) < 225:
             label.setStyleSheet(text_styleo)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: High")
             
             resultString += 'The range this frequency is in is very popular for eavesdropping devices. \nBe wary of anything nearby.'
@@ -457,9 +457,9 @@ class TravelEye(QMainWindow):
         #225-300
         elif float(result[0]) >= 225 and float(result[0]) < 300:
             label.setStyleSheet(text_styleg)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: Low")
             
             resultString += 'The range this frequency is in is mainly for the military. \nIt is unlikely there is a device, but if there is it is a low power device.'
@@ -468,9 +468,9 @@ class TravelEye(QMainWindow):
         #300-365
         elif float(result[0]) >= 300 and float(result[0]) < 365:
             label.setStyleSheet(text_styley)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: Medium")
             
             resultString += 'The range this frequency is in is mainly used for military purposes, \nbut there are some possibilities of devices watching or listening.'
@@ -479,9 +479,9 @@ class TravelEye(QMainWindow):
         #365-420
         elif float(result[0]) >= 365 and float(result[0]) < 400:
             label.setStyleSheet(text_styleo)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: High")
             
             resultString += 'The range this frequency is in has many newer eavesdropping devices. \nBe careful when talking.'
@@ -490,9 +490,9 @@ class TravelEye(QMainWindow):
         #420-450
         elif float(result[0]) >= 420 and float(result[0]) < 450:
             label.setStyleSheet(text_styler)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: High to EXTREME")
             
             resultString += 'The range this frequency is in is can be very dangerous. \nIf between 433 MHz and 434 MHz it is very likely to be a device.'
@@ -501,9 +501,9 @@ class TravelEye(QMainWindow):
         #450-470
         elif float(result[0]) >= 450 and float(result[0]) < 470:
             label.setStyleSheet(text_styleo)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: High")
             
             resultString += 'The range this frequency is in is very popular for long range eavesdropping, \nyou may not find the device.'
@@ -512,9 +512,9 @@ class TravelEye(QMainWindow):
         #470-700
         elif float(result[0]) >= 470 and float(result[0]) < 700:
             label.setStyleSheet(text_styleg)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: Low")
             
             resultString += 'The range this frequency is in is not very popular. \nIf there is a device it could be a low power microphone'
@@ -523,9 +523,9 @@ class TravelEye(QMainWindow):
         #700-800
         elif float(result[0]) >= 700 and float(result[0]) < 800:
             label.setStyleSheet(text_styler)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: EXTREME")
             
             resultString += 'The range this frequency is in is very popular for wireless microphones.'
@@ -534,9 +534,9 @@ class TravelEye(QMainWindow):
         #800-900
         elif float(result[0]) >= 800 and float(result[0]) < 900:
             label.setStyleSheet(text_styley)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: Medium")
             
             resultString += 'The range this frequency is in is popular for eavesdropping devices.'
@@ -545,9 +545,9 @@ class TravelEye(QMainWindow):
         #900-928
         elif float(result[0]) >= 900 and float(result[0]) < 928:
             label.setStyleSheet(text_styleo)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: High")
             
             resultString += 'The range this frequency is in is very popular for spy shop toys. \nIt is likely there is one nearby.'
@@ -556,9 +556,9 @@ class TravelEye(QMainWindow):
         #928-1000
         elif float(result[0]) >= 928 and float(result[0]) < 1000:
             label.setStyleSheet(text_styley)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: Medium")
             
             resultString += 'The range this frequency is in is mainly used by high end equipment. \nCameras and microphones are possibly nearby.'
@@ -567,9 +567,9 @@ class TravelEye(QMainWindow):
         #1000-1350
         elif float(result[0]) >= 1000 and float(result[0]) < 1350:
             label.setStyleSheet(text_styleo)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: High")
             
             resultString += 'The range this frequency is in is popular for video and ultra-miniature audio devices.'
@@ -578,9 +578,9 @@ class TravelEye(QMainWindow):
         #1350-1500
         elif float(result[0]) >= 1350 and float(result[0]) < 1500:
             label.setStyleSheet(text_styley)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: Medium")
             
             resultString += 'The range this frequency is in is moderately used. \nIt can be a camera or a microphone.'
@@ -589,9 +589,9 @@ class TravelEye(QMainWindow):
         #1500-1700
         elif float(result[0]) >= 1500 and float(result[0]) < 1700:
             label.setStyleSheet(text_styleg)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: Low")
             
             resultString += 'The range this frequency is in is where a minor amount of activity is found. \nIt is less likely there is a device nearby.'
@@ -600,9 +600,9 @@ class TravelEye(QMainWindow):
         #1700-2000
         elif float(result[0]) >= 1700 and float(result[0]) < 2000:
             label.setStyleSheet(text_styleo)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: High")
             
             resultString += 'The range this frequency is in is has a large amount of audio and video devices. \nBe wary of cameras and microphones.'
@@ -611,9 +611,9 @@ class TravelEye(QMainWindow):
         #2000-2300
         elif float(result[0]) >= 2000 and float(result[0]) < 2300:
             label.setStyleSheet(text_styleo)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: High")
             
             resultString += 'The range this frequency is in is used by spyshop toys. \nBe wary of ultra-low powered cameras.'
@@ -622,9 +622,9 @@ class TravelEye(QMainWindow):
         # >2400
         elif float(result[0]) >= 2400:
             label.setStyleSheet(text_styler)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("Threat: EXTREME")
             
             resultString += 'The range this frequency is in is where millions of devices are. \nCameras are very likely to be nearby.'
@@ -632,16 +632,16 @@ class TravelEye(QMainWindow):
             
         elif float(result[0]) == -1:
             label.setStyleSheet(text_styleg)
-            layout.addWidget(label)
+            mcm_layout.addWidget(label)
             secondLabel.setStyleSheet(text_style)
-            layout.addWidget(secondLabel)
+            mcm_layout.addWidget(secondLabel)
             label.setText("No signal was found.\nThe likelihood of a device is very low.\nYou can either scan again or exit.")
             
         if result[0] == -1:
             layout = QVBoxLayout()
             question = QLabel("Something went wrong.", window)
             question.setStyleSheet(title_text_style)
-            layout.addWidget(question)
+            mcm_layout.addWidget(question)
 
             result_back_button = QPushButton("Exit")
             result_back_button.clicked.connect(lambda: self.stacked_widget.setCurrentWidget(self.main_menu_widget))
@@ -653,7 +653,7 @@ class TravelEye(QMainWindow):
             layout = QVBoxLayout()
             question = QLabel("", window)
             question.setStyleSheet(title_text_style)
-            layout.addWidget(question)
+            mcm_layout.addWidget(question)
 
             yes_button = QPushButton("Yes")
             yes_button.clicked.connect(yes1)
