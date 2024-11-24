@@ -145,7 +145,7 @@ class TravelEye(QMainWindow):
         recursive_layout.addWidget(self.recursive_label)
 
         next_button = QPushButton("Next")
-        next_button.clicked.connect(self.go_to_menu)
+        next_button.clicked.connect(lambda: self.menu(self.inputList))
         self.set_button_style(next_button)
         recursive_layout.addWidget(next_button)
 
@@ -155,6 +155,7 @@ class TravelEye(QMainWindow):
         recursive_layout.addWidget(back_button_recursive)
 
         self.recursive_widget.setLayout(recursive_layout)
+
 
         # Add all widgets to the stacked widget
         self.stacked_widget.addWidget(self.main_menu_widget)
@@ -187,7 +188,7 @@ class TravelEye(QMainWindow):
         )
 
     def go_to_menu(self):
-        multipleChoiceMenu.menu([(self.recursive_label.text())])
+        multipleChoiceMenu.menu(inputList)
 
     def start_scan(self):
         # Clear previous scan results
@@ -210,7 +211,7 @@ class TravelEye(QMainWindow):
                 if result:
                     for detected in result:
                         freq_found, power = detected
-                        self.inputList.append((freq_found, power))
+                        #self.inputList.append((freq_found, power))
 
                         # Track the strongest signal
                         if max_power is None or power > max_power:
@@ -239,6 +240,7 @@ class TravelEye(QMainWindow):
             self.recursive_timer.stop()
 
         self.current_freq = freq
+        self.inputList.append((self.current_freq, freq, 'power'))
         self.recursive_label.setText(f"Scanning {freq:.2f} MHz...")
         self.stacked_widget.setCurrentWidget(self.recursive_widget)
 
@@ -261,6 +263,459 @@ class TravelEye(QMainWindow):
             self.recursive_timer.stop()
         self.stacked_widget.setCurrentWidget(self.result_widget)
 
+    def menu(self, inputList):
+
+        self.mcm_widget = QWidget()
+        mcm_layout = QVBoxLayout()
+        mcm_layout.setSpacing(20)
+
+        label = QLabel("")
+        #self.label.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
+        #mcm_layout.addWidget(self.mcm_widget)
+        secondLabel = QLabel("")
+        #self.secondLabel.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
+
+        #self.mcm.setLayout(mcm_layout)
+        
+#        self.stacked_widget.addWidget(self.mcm_widget)
+        
+#        self.stacked_widget.setCurrentWidget(self.mcm_widget)
+
+        # Define styles for text and buttons
+        text_style = "color: lime; font-family: Courier; font-size: 16px; font-weight: bold;"
+        text_styleg = "color: lime; font-family: Courier; font-size: 16px; font-weight: bold;"
+        text_styley = "color: yellow; font-family: Courier; font-size: 16px; font-weight: bold;"
+        text_styleo = "color: orange; font-family: Courier; font-size: 16px; font-weight: bold;"
+        text_styler = "color: red; font-family: Courier; font-size: 16px; font-weight: bold;"
+        title_text_style = "color: lime; font-family: Courier; font-size: 28px; font-weight: bold;"
+        button_style = "background-color: black; color: lime; font-family: Courier; font-size: 14px; font-weight: bold; border: 2px solid lime; padding: 10px;"
+
+
+
+        def yes1():
+            question.setText("Are you able to touch the device?")
+            yes_button.clicked.connect(yesTouch)
+            no_button.clicked.connect(noTouch)
+            
+#        def yes2():
+#            question.setText("Are you able to touch the device?")
+#            mcm_layout.removeWidget(no_button)
+#            mcm_layout.removeWidget(yes_button)
+#            yes_button.deleteLater()
+#            no_button.deleteLater()
+#            
+#            yes_button = QPushButton("Yes")
+#            yes_button.clicked.connect(yesTouch)
+#            self.set_button_style(yes_button)
+#            mcm_layout.addWidget(yes_button)
+
+#            no_button = QPushButton("No")
+#            no_button.clicked.connect(noTouch)
+#            self.set_button_style(no_button)
+#            mcm_layout.addWidget(no_button)
+            
+            #yes_button.clicked.connect(yesTouch)
+            #no_button.clicked.connect(noTouch)
+
+        def no1():
+            question.setText("It could be hidden. \nCheck smoke alarms, power outlets, walls, lights, etc.\nDid you find anything?")
+            yes_button.clicked.connect(yes1)
+            no_button.clicked.connect(noSmoke)
+
+        def noSmoke():
+            question.setText("Are there any windows or openings around you?")
+            yes_button.clicked.connect(yesWindow)
+            no_button.clicked.connect(noWindow)
+
+        def yesTouch():
+            mcm_layout.removeWidget(no_button)
+            mcm_layout.removeWidget(yes_button)
+            yes_button.deleteLater()
+            no_button.deleteLater()
+            question.setText("If you never gave consent for a camera or microphone to be where you are,\nyou may be allowed to disable it. Look for power buttons around the device. \nIf there is not one, see if it is connected to a power source like an outlet and unplug it.\nIf none of these options are possible, your best scenario may be to physically obstruct the camera \nso it cannot see you and muffle the sound by wrapping it in something like a towel.\n If it is a microphone, muffle the sound with something like a towel or blanket and be wary.")
+            back_button_recursive = QPushButton("Back")
+            back_button_recursive.clicked.connect(self.stop_recursive_scan)
+            self.set_button_style(back_button_recursive)
+            mcm_layout.addWidget(back_button_recursive)
+            mcm_layout.removeWidget(yes_button)
+            
+            
+
+        def noTouch():
+            mcm_layout.removeWidget(no_button)
+            mcm_layout.removeWidget(yes_button)
+            yes_button.deleteLater()
+            no_button.deleteLater()
+            question.setText("If the device is a microphone, it may be impossible to stop it. \nLook for places it may be plugged into like outlets or holes in the wall and unplug it if possible.\nBe careful of what you say in the room\nIf it is a camera, try to cover the line of sight so that it cannot see you.\nIt still may be able to hear, so be careful.")
+            reset_button = QPushButton("Back", window)
+            reset_button.setStyleSheet(button_style)
+            reset_button.clicked.connect(self.stop_recursive_scan)
+            mcm_layout.addWidget(reset_button)
+
+        def yesWindow():
+            mcm_layout.removeWidget(no_button)
+            mcm_layout.removeWidget(yes_button)
+            yes_button.deleteLater()
+            no_button.deleteLater()
+            question.setText("Try to cover any windows or openings near you.\nThis may be where you are being monitored from.\nBlock your windows as well as you can.")
+            reset_button = QPushButton("Back", window)
+            reset_button.setStyleSheet(button_style)
+            reset_button.clicked.connect(self.stop_recursive_scan)
+            mcm_layout.addWidget(reset_button)
+
+        def noWindow():
+            mcm_layout.removeWidget(no_button)
+            mcm_layout.removeWidget(yes_button)
+            yes_button.deleteLater()
+            no_button.deleteLater()
+            question.setText("There may be a false signal or it is well hidden. \nKeep searching or scan again.")
+            reset_button = QPushButton("Back", window)
+            reset_button.setStyleSheet(button_style)
+            reset_button.clicked.connect(self.stop_recursive_scan)
+            mcm_layout.addWidget(reset_button)
+
+
+        if len(inputList) != 0: 
+            result = inputList[0]
+        else:
+            result = (-1, -1)
+
+
+
+
+
+        resultString = f'A frequency was found at {result[0]} MHz\n'
+        #label = QLabel(resultString, window)
+
+
+
+        #list of extremely hostile frequencies
+        xHostileList = [37.6000,49.8300,49.8550,49.8900,139.6000,140.0000,140.8500,143.5000,146.5350,146.5356,148.0050,164.4625,164.8625,166.6625,166.8625,168.0000,168.8000,169.4450,169.5050,170.1000,170.2450,170.3050,170.4875,170.9750,171.0450,171.1050,171.4500,171.6000,171.8250,171.8450,171.9050,172.0000,172.2000,172.8875,172.8875,173.3500,175.0200,184.8500,190.6000,203.0000,221.5000,224.5000,303.6150,303.8250,304.2450,304.2614,310.0000,314.3750,314.8500,315.0000,321.9850,391.2050,392.7280,398.6050,399.0300,399.4550,414.9800,416.2500,416.8450,418.0000,420.5440,423.1250,427.1250,427.4750,427.8250,428.6350,429.5050,433.9200,439.2500,499.9700,499.9750,673.9350,1310.0000,1350.0000,1521.3068,1572.0350]
+
+        #resultString += f'A frequency was found at {result[0]} MHz\n'
+        #very long list of possibilities
+        if float(result[0]) in xHostileList:
+            label.setStyleSheet(text_styler)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: EXTREME")
+
+        #20-45
+        elif float(result[0]) >= 20 and float(result[0]) < 45:
+            label.setStyleSheet(text_styleo)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: Medium")
+            
+            resultString += 'The device is likely an old camera or microphone.'
+            secondLabel.setText(resultString)
+            
+        #45-50
+        elif float(result[0]) >= 45 and float(result[0]) < 50:
+            label.setStyleSheet(text_styler)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: EXTREME")
+            
+            resultString += 'This is in the range of a list of devices that can be very likely for surveillance devices. \nIt can be a camera or a microphone.'
+            secondLabel.setText(resultString)
+            
+        #45-88
+        elif float(result[0]) >= 45 and float(result[0]) < 88:
+            label.setStyleSheet(text_styleo)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: High")
+            
+            resultString += 'This is in the range of a list of devices that can be very likely for surveillance devices.\n It can be a camera or a microphone.'
+            secondLabel.setText(resultString)
+            
+        #88-108
+        elif float(result[0]) >= 88 and float(result[0]) < 108:
+            label.setStyleSheet(text_styley)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: Medium")
+            
+            resultString += 'The range this frequency is in is likely for eavesdropping devices \nlike microphones or crystal controlled devices.'
+            secondLabel.setText(resultString)
+            
+        #108-135
+        elif float(result[0]) >= 108 and float(result[0]) < 135:
+            label.setStyleSheet(text_styleo)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: High")
+            
+            resultString += 'The range this frequency is in is likely to be a low cost device for eavesdropping. \nMicrophone is likely.'
+            secondLabel.setText(resultString)
+            
+        #135-150
+        elif float(result[0]) >= 135 and float(result[0]) < 150:
+            label.setStyleSheet(text_styleo)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: High")
+            
+            resultString += 'The range this frequency is in is where thousands of eavesdropping devices are used. \nBe very wary of a microphone or other devices such as kit bugs.'
+            secondLabel.setText(resultString)
+            
+        #150-175
+        elif float(result[0]) >= 150 and float(result[0]) < 175:
+            label.setStyleSheet(text_styler)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: EXTREME")
+            
+            resultString += 'The range this frequency is in is very popular for wireless microphones.'
+            secondLabel.setText(resultString)
+            
+        #175-200
+        elif float(result[0]) >= 175 and float(result[0]) < 200:
+            label.setStyleSheet(text_styley)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: Medium")
+            
+            resultString += 'The range this frequency is in is popular for wireless microphones.'
+            secondLabel.setText(resultString)
+            
+        #200-225
+        elif float(result[0]) >= 200 and float(result[0]) < 225:
+            label.setStyleSheet(text_styleo)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: High")
+            
+            resultString += 'The range this frequency is in is very popular for eavesdropping devices. \nBe wary of anything nearby.'
+            secondLabel.setText(resultString)
+            
+        #225-300
+        elif float(result[0]) >= 225 and float(result[0]) < 300:
+            label.setStyleSheet(text_styleg)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: Low")
+            
+            resultString += 'The range this frequency is in is mainly for the military. \nIt is unlikely there is a device, but if there is it is a low power device.'
+            secondLabel.setText(resultString)
+            
+        #300-365
+        elif float(result[0]) >= 300 and float(result[0]) < 365:
+            label.setStyleSheet(text_styley)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: Medium")
+            
+            resultString += 'The range this frequency is in is mainly used for military purposes, \nbut there are some possibilities of devices watching or listening.'
+            secondLabel.setText(resultString)
+            
+        #365-420
+        elif float(result[0]) >= 365 and float(result[0]) < 400:
+            label.setStyleSheet(text_styleo)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: High")
+            
+            resultString += 'The range this frequency is in has many newer eavesdropping devices. \nBe careful when talking.'
+            secondLabel.setText(resultString)
+            
+        #420-450
+        elif float(result[0]) >= 420 and float(result[0]) < 450:
+            label.setStyleSheet(text_styler)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: High to EXTREME")
+            
+            resultString += 'The range this frequency is in is can be very dangerous. \nIf between 433 MHz and 434 MHz it is very likely to be a device.'
+            secondLabel.setText(resultString)
+            
+        #450-470
+        elif float(result[0]) >= 450 and float(result[0]) < 470:
+            label.setStyleSheet(text_styleo)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: High")
+            
+            resultString += 'The range this frequency is in is very popular for long range eavesdropping, \nyou may not find the device.'
+            secondLabel.setText(resultString)
+            
+        #470-700
+        elif float(result[0]) >= 470 and float(result[0]) < 700:
+            label.setStyleSheet(text_styleg)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: Low")
+            
+            resultString += 'The range this frequency is in is not very popular. \nIf there is a device it could be a low power microphone'
+            secondLabel.setText(resultString)
+            
+        #700-800
+        elif float(result[0]) >= 700 and float(result[0]) < 800:
+            label.setStyleSheet(text_styler)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: EXTREME")
+            
+            resultString += 'The range this frequency is in is very popular for wireless microphones.'
+            secondLabel.setText(resultString)
+            
+        #800-900
+        elif float(result[0]) >= 800 and float(result[0]) < 900:
+            label.setStyleSheet(text_styley)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: Medium")
+            
+            resultString += 'The range this frequency is in is popular for eavesdropping devices.'
+            secondLabel.setText(resultString)
+            
+        #900-928
+        elif float(result[0]) >= 900 and float(result[0]) < 928:
+            label.setStyleSheet(text_styleo)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: High")
+            
+            resultString += 'The range this frequency is in is very popular for spy shop toys. \nIt is likely there is one nearby.'
+            secondLabel.setText(resultString)
+            
+        #928-1000
+        elif float(result[0]) >= 928 and float(result[0]) < 1000:
+            label.setStyleSheet(text_styley)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: Medium")
+            
+            resultString += 'The range this frequency is in is mainly used by high end equipment. \nCameras and microphones are possibly nearby.'
+            secondLabel.setText(resultString)
+            
+        #1000-1350
+        elif float(result[0]) >= 1000 and float(result[0]) < 1350:
+            label.setStyleSheet(text_styleo)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: High")
+            
+            resultString += 'The range this frequency is in is popular for video and ultra-miniature audio devices.'
+            secondLabel.setText(resultString)
+            
+        #1350-1500
+        elif float(result[0]) >= 1350 and float(result[0]) < 1500:
+            label.setStyleSheet(text_styley)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: Medium")
+            
+            resultString += 'The range this frequency is in is moderately used. \nIt can be a camera or a microphone.'
+            secondLabel.setText(resultString)
+            
+        #1500-1700
+        elif float(result[0]) >= 1500 and float(result[0]) < 1700:
+            label.setStyleSheet(text_styleg)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: Low")
+            
+            resultString += 'The range this frequency is in is where a minor amount of activity is found. \nIt is less likely there is a device nearby.'
+            secondLabel.setText(resultString)
+            
+        #1700-2000
+        elif float(result[0]) >= 1700 and float(result[0]) < 2000:
+            label.setStyleSheet(text_styleo)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: High")
+            
+            resultString += 'The range this frequency is in is has a large amount of audio and video devices. \nBe wary of cameras and microphones.'
+            secondLabel.setText(resultString)
+            
+        #2000-2300
+        elif float(result[0]) >= 2000 and float(result[0]) < 2300:
+            label.setStyleSheet(text_styleo)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: High")
+            
+            resultString += 'The range this frequency is in is used by spyshop toys. \nBe wary of ultra-low powered cameras.'
+            secondLabel.setText(resultString)
+            
+        # >2400
+        elif float(result[0]) >= 2400:
+            label.setStyleSheet(text_styler)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("Threat: EXTREME")
+            
+            resultString += 'The range this frequency is in is where millions of devices are. \nCameras are very likely to be nearby.'
+            secondLabel.setText(resultString)
+            
+        elif float(result[0]) == -1:
+            label.setStyleSheet(text_styleg)
+            mcm_layout.addWidget(label)
+            secondLabel.setStyleSheet(text_style)
+            mcm_layout.addWidget(secondLabel)
+            label.setText("No signal was found.\nThe likelihood of a device is very low.\nYou can either scan again or exit.")
+            
+        if result[0] == -1:
+            # layout = QVBoxLayout()
+            question = QLabel("Something went wrong.", window)
+            question.setStyleSheet(title_text_style)
+            mcm_layout.addWidget(question)
+
+            result_back_button = QPushButton("Exit")
+            result_back_button.clicked.connect(lambda: self.stacked_widget.setCurrentWidget(self.main_menu_widget))
+            set_button_style(result_back_button)
+            button_layout.addWidget(result_back_button)
+
+        else:
+
+            #layout = QVBoxLayout()
+            question = QLabel("Can you see the device?", window)
+            question.setStyleSheet(text_style)
+            mcm_layout.addWidget(question)
+
+            yes_button = QPushButton("Yes")
+            yes_button.clicked.connect(yes1)
+            self.set_button_style(yes_button)
+            mcm_layout.addWidget(yes_button)
+
+            no_button = QPushButton("No")
+            no_button.clicked.connect(no1)
+            self.set_button_style(no_button)
+            mcm_layout.addWidget(no_button)
+            
+            self.mcm_widget.setLayout(mcm_layout)
+            
+            self.stacked_widget.addWidget(self.mcm_widget)
+        
+            self.stacked_widget.setCurrentWidget(self.mcm_widget)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
