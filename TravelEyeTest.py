@@ -269,13 +269,20 @@ class TravelEye(QMainWindow):
         mcm_layout = QVBoxLayout()
         mcm_layout.setSpacing(20)
 
-        #self.mcm_label = QLabel("")
-        self.mcm_label.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
+        label = QLabel("hi")
+        #self.label.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
         mcm_layout.addWidget(self.mcm_widget)
+        secondLabel = QLabel("")
+        #self.secondLabel.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
 
         #self.mcm.setLayout(mcm_layout)
+        
+        self.stacked_widget.addWidget(self.mcm_widget)
+        
+        self.stacked_widget.setCurrentWidget(self.mcm_widget)
 
         # Define styles for text and buttons
+        text_style = "color: lime; font-family: Courier; font-size: 16px; font-weight: bold;"
         text_styleg = "color: lime; font-family: Courier; font-size: 16px; font-weight: bold;"
         text_styley = "color: yellow; font-family: Courier; font-size: 16px; font-weight: bold;"
         text_styleo = "color: orange; font-family: Courier; font-size: 16px; font-weight: bold;"
@@ -657,12 +664,12 @@ class TravelEye(QMainWindow):
 
             yes_button = QPushButton("Yes")
             yes_button.clicked.connect(yes1)
-            set_button_style(yes_button)
+            self.set_button_style(yes_button)
             mcm_layout.addWidget(yes_button)
 
             no_button = QPushButton("No")
             no_button.clicked.connect(no1)
-            set_button_style(no_button)
+            self.set_button_style(no_button)
             mcm_layout.addWidget(no_button)
 
 if __name__ == "__main__":
