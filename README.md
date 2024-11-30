@@ -21,7 +21,7 @@ This project was created for a capstone course (CSC355) at Kutztown University
 This project uses a custom 3D printed case. The STL file for printing can be found in the repository
 
 ### Assembly
-Image of architechture
+<img src="Images/TEArchitecture.png" alt="drawing" width="400"/>
 
 The above image is how the components are arranged in the case
 
