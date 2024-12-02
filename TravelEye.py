@@ -40,7 +40,7 @@ class TravelEye(QMainWindow):
         self.main_menu_widget.setLayout(self.main_menu_layout)
 
         title = QLabel("TravelEye")
-        title.setStyleSheet("font-family: Courier; font-size: 32px; font-weight: bold; color: lime;")
+        title.setStyleSheet("font-family: Courier; font-size: 70px; font-weight: bold; color: lime;")
         title.setAlignment(Qt.AlignCenter)
         self.main_menu_layout.addWidget(title)
 
