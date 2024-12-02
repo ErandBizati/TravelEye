@@ -21,7 +21,7 @@ This device was made with one specific list of components; however, this project
 - SMA Antenna (Bingfu BFN00419)
 - Normal Open Button (Twidec Push Button 7mm) 
 
-This project uses a custom 3D printed case. The STL file for printing can be found in the repository. Black PLA filament was used for the final case. Case design is based on the exact parts used therefore, if any components are swapped out, the case might no longer fit all components
+This project uses a custom 3D printed case. The STL file for printing can be found in the repository `TravelEyeCase.stl`. Black PLA filament was used for the final case. Case design is based on the exact parts used therefore, if any components are swapped out, the case might no longer fit all components
 
 ### Assembly
 The following diagram shows the layout of all the device components within the case
@@ -48,9 +48,9 @@ The TravelEye program runs off the Raspberry Pi which should be running Raspbian
 ### Running TravelEye
 One the device has been assembled and all software requirements have been installed, TravelEye is ready to run
 
-First make sure that **TravelEye.py**, **multipleChoiceMenu.py**, **MultiSigDetection.py** are located in the same folder before running
+First make sure that `TravelEye.py`, `multipleChoiceMenu.py`, `MultiSigDetection.py` are located in the same folder before running
 
-You can then start the program by running **TravelEye.py**
+You can then start the program by running `TravelEye.py`
 
 ## Making Scan Adjustments
 Scanning for such a wide range of different frequencies can be a challenge
@@ -62,7 +62,7 @@ There are two things that can be easily changed which can affect how the device 
 ### **Search list**
 
   This is the list of all frequencies which TravelEye will scan for.
-  This list is contained in *dangerousFrequencies.txt*.
+  This list is contained in `dangerousFrequencies.txt`.
 
   You can add or remove any frequencies on this list. Keep in mind that all values are in MHz. The effective frequency range this device can scan for is 24 – 1766 MHz
  
@@ -72,7 +72,7 @@ There are two things that can be easily changed which can affect how the device 
   This value represents the strength of the signal for it to be considered found. TravelEye collects data for all signals that were on the search list, however it only shows signals that we found to be above the threshold. 
   This value can be changed to make TravelEye more or less sensitive for finding signals 
 
-  This value is contained in *MultiSigDetection.py*. The threshold is measured in decibels
+  This value is contained in `MultiSigDetection.py` using the `THRESHOLD` variable. The threshold is measured in decibels
 
   *Caution: The UI and threshold was adjusted to only show the most prominent signals in order to not overwhelm the user with too many signals which might not be relevant. Making the threshold too low may cause all signals to be displayed which could break the UI* 
   
