@@ -4,12 +4,16 @@
 </p>
 
 ## About
-*Created by Owen Campain, Adam Wisnewski, Jacob Philips, Erand Bizati*
-
 TravelEye is a portable device which used radio frequency detection to find hidden surveillance devices.
 This device is aimed towards travelers with any level of technical knowledge
 
-This project was created for a capstone course (CSC355) at Kutztown University
+TravelEye scans using a list that contains frequencies that are known to be associated with surveillance devices. Any frequencies that are found to be above a determined threshold are shown to the user as possible surveillance devices.
+The user can then select one of the found signals and TravelEye will then perform a focused scan on just that frequency. It will continuously scan, updating the signal strength so the user can walk around and watch the strength of the signal change for different parts of a room.
+The user can then go through a few questions and TravelEye can provide advice on how to locate and possibly disable the device.
+
+*Created by Owen Campain, Adam Wisnewski, Jacob Philips, Erand Bizati*
+
+This project was created for a capstone course (CSC355) at Kutztown University and was formally presented at Kutztown's Demo Day 2024
 
 ## Installation
 ### Materials
@@ -66,7 +70,7 @@ There are two things that can be easily changed which can affect how the device 
 
   You can add or remove any frequencies on this list. Keep in mind that all values are in MHz. The effective frequency range this device can scan for is 24 – 1766 MHz
  
-  *Caution: The length of the list affects the length of scans. Adding too many frequencies can slow down the scan time. *
+  *Caution: The length of the list affects the length of scans. Adding too many frequencies can slow down the scan time*.
 
 ### Threshold
   This value represents the strength of the signal for it to be considered found. TravelEye collects data for all signals that were on the search list, however it only shows signals that we found to be above the threshold. 
