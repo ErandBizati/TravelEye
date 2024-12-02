@@ -1,3 +1,4 @@
+
 #-------------------#
 # File: TravelEye.py #
 #-------------------#
@@ -64,29 +65,15 @@ class TravelEye(QMainWindow):
         self.set_button_style(quit_button)
         self.main_menu_layout.addWidget(quit_button)
 
-       # Help frame
+        # Help frame
         self.help_widget = QWidget()
         help_layout = QVBoxLayout()
         help_layout.setSpacing(20)
-        
-        help_text = QLabel(
-            "Instructions:\n\n"
-            "1. Tap Start to scan\n"
-            "   - Scans once for all device ranges\n"
-            "   - Signal strength is measured in decibels\n"
-            "   - The higher the value, the stronger the signal\n\n"
-            "2. Tap a found frequency to begin a focused scan\n"
-            "   - The device will repeatedly scan for one signal\n"
-            "   - Watch the signal strength change as you move around\n"
-            "   - Use this to locate where the signal is strongest\n\n"
-            "3. Tap Next to answer some questions to help locate the device"
-        )
-        help_text.setStyleSheet(
-            "font-family: Courier; font-size: 28px; color: lime; text-align: center;"
-        )
-        help_text.setAlignment(Qt.AlignCenter)  # Center the text
+
+        help_text = QLabel("Instructions:\n1. Press Start to scan\n2. Tap a frequency to view details.")
+        help_text.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
         help_layout.addWidget(help_text)
-        
+
         help_back_button = QPushButton("Back")
         help_back_button.clicked.connect(lambda: self.stacked_widget.setCurrentWidget(self.main_menu_widget))
         self.set_button_style(help_back_button)
