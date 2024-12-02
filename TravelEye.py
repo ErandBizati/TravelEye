@@ -212,7 +212,7 @@ class TravelEye(QMainWindow):
                 if result:
                     for detected in result:
                         freq_found, power = detected
-                        #self.inputList.append((freq_found, power))
+                        self.inputList.append((freq_found, power))
 
                         # Track the strongest signal
                         if max_power is None or power > max_power:
