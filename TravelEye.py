@@ -139,21 +139,22 @@ class TravelEye(QMainWindow):
         self.recursive_widget = QWidget()
         recursive_layout = QVBoxLayout()
         recursive_layout.setSpacing(20)
-
+        
         self.recursive_label = QLabel("")
-        self.recursive_label.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
+        self.recursive_label.setStyleSheet("font-family: Courier; font-size: 40px; color: lime;")
+        self.recursive_label.setAlignment(Qt.AlignCenter)  # Center align the text
         recursive_layout.addWidget(self.recursive_label)
-
+        
         next_button = QPushButton("Next")
         next_button.clicked.connect(lambda: self.menu(self.inputList))
         self.set_button_style(next_button)
         recursive_layout.addWidget(next_button)
-
+        
         back_button_recursive = QPushButton("Back")
         back_button_recursive.clicked.connect(self.stop_recursive_scan)
         self.set_button_style(back_button_recursive)
         recursive_layout.addWidget(back_button_recursive)
-
+        
         self.recursive_widget.setLayout(recursive_layout)
 
 
