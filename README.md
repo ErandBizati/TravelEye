@@ -13,14 +13,15 @@ This project was created for a capstone course (CSC355) at Kutztown University
 
 ## Installation
 ### Materials
-- RTL-SDR
-- Raspberry Pi
-- Raspberry Pi battery
-- Touch Screen
-- SMA Antenna
-- Normal Open Button
+This device was made with one specific list of components; however, this project could be recreated with slightly different components and still function. Below are the generic components required for the project along with exact models used by the team in parenthesis.
+- RTL-SDR (V3)
+- Raspberry Pi (3B+)
+- Raspberry Pi Battery (PiSugar S Plus)
+- Touch Screen (Hosyond 7-inch HDMI)
+- SMA Antenna (Bingfu BFN00419)
+- Normal Open Button (Twidec Push Button 7mm) 
 
-This project uses a custom 3D printed case. The STL file for printing can be found in the repository
+This project uses a custom 3D printed case. The STL file for printing can be found in the repository. Black PLA filament was used for the final case. Case design is based on the exact parts used therefore, if any components are swapped out, the case might no longer fit all components
 
 ### Assembly
 The following diagram shows the layout of all the device components within the case
