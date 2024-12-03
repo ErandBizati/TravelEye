@@ -1,4 +1,5 @@
 
+
 #-------------------#
 # File: TravelEye.py #
 #-------------------#
@@ -70,8 +71,20 @@ class TravelEye(QMainWindow):
         help_layout = QVBoxLayout()
         help_layout.setSpacing(20)
 
-        help_text = QLabel("Instructions:\n1. Press Start to scan\n2. Tap a frequency to view details.")
-        help_text.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
+        help_text = QLabel(
+            "Instructions:\n"
+            "1. Tap Start to scan\n"
+            "\tScans once for all device ranges\n"
+            "\tSignal strength is measured in decibels\n"
+            "\tThe higher the value, the stronger the signal\n"
+            "2. Tap a found frequency to begin a focused scan\n"
+            "\tThe device will repeatedly scan for one signal\n"
+            "\tWatch the signal strength change as you move around\n"
+            "\tUse this to locate where the signal is strongest\n"
+            "3. Tap Next to answer some questions to help locate the device"
+        )
+        help_text.setStyleSheet("font-family: Courier; font-size: 25px; color: lime;")
+       
         help_layout.addWidget(help_text)
 
         help_back_button = QPushButton("Back")
@@ -85,10 +98,16 @@ class TravelEye(QMainWindow):
         about_layout = QVBoxLayout()
         about_layout.setSpacing(20)
 
-        about_text = QLabel("Travel Eye v1.3\nA tool for scanning RF signals.")
-        about_text.setStyleSheet("font-family: Courier; font-size: 20px; color: lime;")
+        about_text = QLabel(
+            "TravelEye Version 1.0\n"
+            "by Adam Wisnewski, Jacob Philips, Erand Bizati, and Owen Campain\n\n"
+            "TravelEye is a portable device which uses radio frequency detection\n"
+            "to find hidden surveillance devices."
+        )
+        about_text.setStyleSheet("font-family: Courier; font-size: 25px; color: lime;")
+        about_text.setAlignment(Qt.AlignCenter)  # Center align the text
         about_layout.addWidget(about_text)
-
+        
         about_back_button = QPushButton("Back")
         about_back_button.clicked.connect(lambda: self.stacked_widget.setCurrentWidget(self.main_menu_widget))
         self.set_button_style(about_back_button)
