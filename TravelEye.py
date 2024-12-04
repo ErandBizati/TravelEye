@@ -210,51 +210,83 @@ class TravelEye(QMainWindow):
 
     def go_to_menu(self):
         multipleChoiceMenu.menu(inputList)
-
+        
     def start_scan(self):
+        # Disable the "Scan Again" button to prevent multiple invocations
+        scan_again_button = self.sender()
+        scan_again_button.setEnabled(False)
+        scan_again_button.setStyleSheet(
+            """
+            QPushButton {
+                font-family: Courier;
+                font-size: 20px; 
+                font-weight: bold; 
+                color: grey; 
+                background-color: black; 
+                padding: 20px; 
+                border: 2px solid grey;
+                outline: none;
+            }
+            """
+        )
+    
+        # Set a timer to re-enable the button after 5 seconds
+        QTimer.singleShot(5000, lambda: self.enable_scan_again(scan_again_button))
+    
         # Clear previous scan results
         self.inputList = []
         self.total_signals_label.setText("Total Signals Detected: 0")
         self.strongest_signal_label.setText("Strongest Signal: N/A")
-
+    
         for i in reversed(range(self.scroll_layout.count())): 
             widget = self.scroll_layout.itemAt(i).widget()
             if widget is not None:
                 widget.deleteLater()
-
+    
         max_power = None
         max_signal = None
-
-        # Perform scan and create frequency buttons
-        for freq in SEARCHLIST:
-            try:
-                result = MultiSigDetection.scan(MultiSigDetection.sdr, freq, TRESHOLD)
-                if result:
-                    for detected in result:
-                        freq_found, power = detected
-                        self.inputList.append((freq_found, power))
-
-                        # Track the strongest signal
-                        if max_power is None or power > max_power:
-                            max_power = power
-                            max_signal = freq_found
-
-                        # Create button for each detected frequency
-                        freq_button = QPushButton(f"{freq_found:.2f} MHz | {power:.2f} dB")
-                        freq_button.clicked.connect(lambda _, f=freq_found: self.start_recursive_scan(f))
-                        self.set_button_style(freq_button)
-                        self.scroll_layout.addWidget(freq_button)
-            except Exception as e:
-                error_label = QLabel(f"Error scanning {freq} MHz")
-                error_label.setStyleSheet("font-family: Courier; color: red; font-size: 16px;")
-                self.scroll_layout.addWidget(error_label)
-
-        # Update total signals and strongest signal
-        self.total_signals_label.setText(f"Total Signals Detected: {len(self.inputList)}")
-        if max_signal is not None:
-            self.strongest_signal_label.setText(f"Strongest Signal: {max_signal:.2f} MHz | {max_power:.2f} dB")
-
+    
+        try:
+            # Perform scan and create frequency buttons
+            for freq in SEARCHLIST:
+                try:
+                    result = MultiSigDetection.scan(MultiSigDetection.sdr, freq, TRESHOLD)
+                    if result:
+                        for detected in result:
+                            freq_found, power = detected
+                            self.inputList.append((freq_found, power))
+    
+                            # Track the strongest signal
+                            if max_power is None or power > max_power:
+                                max_power = power
+                                max_signal = freq_found
+    
+                            # Create button for each detected frequency
+                            freq_button = QPushButton(f"{freq_found:.2f} MHz | {power:.2f} dB")
+                            freq_button.clicked.connect(lambda _, f=freq_found: self.start_recursive_scan(f))
+                            self.set_button_style(freq_button)
+                            self.scroll_layout.addWidget(freq_button)
+                except Exception as e:
+                    error_label = QLabel(f"Error scanning {freq} MHz")
+                    error_label.setStyleSheet("font-family: Courier; color: red; font-size: 16px;")
+                    self.scroll_layout.addWidget(error_label)
+    
+            # Update total signals and strongest signal
+            self.total_signals_label.setText(f"Total Signals Detected: {len(self.inputList)}")
+            if max_signal is not None:
+                self.strongest_signal_label.setText(f"Strongest Signal: {max_signal:.2f} MHz | {max_power:.2f} dB")
+        except Exception as e:
+            print(f"Scan failed: {e}")
+        finally:
+            # Re-enable the button after 5 seconds is handled by the timer
+            pass
+    
         self.stacked_widget.setCurrentWidget(self.result_widget)
+    
+    def enable_scan_again(self, button):
+        # Re-enable the "Scan Again" button and restore its style
+        button.setEnabled(True)
+        self.set_button_style(button)
 
     def start_recursive_scan(self, freq):
         if self.recursive_timer.isActive():
@@ -349,26 +381,43 @@ class TravelEye(QMainWindow):
             no_button.clicked.connect(noWindow)
 
         def yesTouch():
-            mcm_layout.removeWidget(no_button)
-            mcm_layout.removeWidget(yes_button)
-            yes_button.deleteLater()
-            no_button.deleteLater()
-            question.setText("If you never gave consent for a camera or microphone to be where you are,\nyou may be allowed to disable it. Look for power buttons around the device. \nIf there is not one, see if it is connected to a power source like an outlet and unplug it.\nIf none of these options are possible, your best scenario may be to physically obstruct the camera \nso it cannot see you and muffle the sound by wrapping it in something like a towel.\n If it is a microphone, muffle the sound with something like a towel or blanket and be wary.")
+            # Clear previous buttons
+            for i in reversed(range(mcm_layout.count())):
+                widget = mcm_layout.itemAt(i).widget()
+                if isinstance(widget, QPushButton):
+                    widget.deleteLater()
+        
+            question.setText(
+                "If you never gave consent for a camera or microphone to be where you are,\n"
+                "you may be allowed to disable it. Look for power buttons around the device.\n"
+                "If there is not one, see if it is connected to a power source like an outlet and unplug it.\n"
+                "If none of these options are possible, your best scenario may be to physically obstruct the camera\n"
+                "so it cannot see you and muffle the sound by wrapping it in something like a towel.\n"
+                "If it is a microphone, muffle the sound with something like a towel or blanket and be wary."
+            )
+        
             back_button_recursive = QPushButton("Back")
             back_button_recursive.clicked.connect(self.stop_recursive_scan)
             self.set_button_style(back_button_recursive)
             mcm_layout.addWidget(back_button_recursive)
-            mcm_layout.removeWidget(yes_button)
-            
-            
-
+        
+        
         def noTouch():
-            mcm_layout.removeWidget(no_button)
-            mcm_layout.removeWidget(yes_button)
-            yes_button.deleteLater()
-            no_button.deleteLater()
-            question.setText("If the device is a microphone, it may be impossible to stop it. \nLook for places it may be plugged into like outlets or holes in the wall and unplug it if possible.\nBe careful of what you say in the room\nIf it is a camera, try to cover the line of sight so that it cannot see you.\nIt still may be able to hear, so be careful.")
-            reset_button = QPushButton("Back", window)
+            # Clear previous buttons
+            for i in reversed(range(mcm_layout.count())):
+                widget = mcm_layout.itemAt(i).widget()
+                if isinstance(widget, QPushButton):
+                    widget.deleteLater()
+        
+            question.setText(
+                "If the device is a microphone, it may be impossible to stop it.\n"
+                "Look for places it may be plugged into like outlets or holes in the wall and unplug it if possible.\n"
+                "Be careful of what you say in the room.\n"
+                "If it is a camera, try to cover the line of sight so that it cannot see you.\n"
+                "It still may be able to hear, so be careful."
+            )
+        
+            reset_button = QPushButton("Back")
             reset_button.setStyleSheet(button_style)
             reset_button.clicked.connect(self.stop_recursive_scan)
             mcm_layout.addWidget(reset_button)
