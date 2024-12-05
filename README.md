@@ -79,4 +79,49 @@ There are two things that can be easily changed which can affect how the device 
   This value is contained in `MultiSigDetection.py` using the `THRESHOLD` variable. The threshold is measured in decibels
 
   *Caution: The UI and threshold was adjusted to only show the most prominent signals in order to not overwhelm the user with too many signals which might not be relevant. Making the threshold too low may cause all signals to be displayed which could break the UI* 
+
+## User Guide
+Here are some basic instructions and information on using TravelEye
+
+### Instructions:
+
+**1. Tap Start to scan**
+
+  Scans once for all device ranges
   
+  Signal strength is measured in decibels
+  
+  The higher the value, the stronger the signal
+  
+**2. Tap a found frequency to begin a focused scan**
+
+  The device will repeatedly scan for one signal
+  
+  Watch the signal strength change as you move around
+  
+  Use this to locate where the signal is strongest
+  
+**3. Tap next to answer some questions to help locate the device**
+
+### FAQ
+
+_How close to a device do you need to detect it? _
+
+There is no exact range on how far TravelEye can detect, it mainly depends on the strength of the signal it is trying to detect.
+Most hidden devices put out a strong enough signal that TravelEye can detect as long as you are in the same room.
+There have been some cases where TravelEye can detect from another room, but that is not always consistent.
+
+_Can TravelEye find any camera or microphone?_
+
+No, Currently TravelEye is intended to find cameras and microphones made for surveillance purposes which use radio frequency to communicate. 
+Cameras and microphones which use wired or Wi-Fi communication cannot be found.
+Our team would love to expand TravelEye's capabilities in the future, but for now TravelEye focuses on a more niche group of devices.
+
+_What should I do if I find a device and cannot disable it?_
+
+It is recommended to research surveillance and recording laws for your state/country as well as contacting the manager of the location you are staying. 
+Every situation is different, so it is important to find out your rights. In many places, the authorities can be contacted if your right to privacy is being violated.
+
+### Demo
+Here is quick demo of the TravelEye device
+https://www.youtube.com/watch?v=QhOCgh7br6o
