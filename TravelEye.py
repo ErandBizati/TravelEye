@@ -1,7 +1,7 @@
-
-
 #-------------------#
 # File: TravelEye.py #
+# Authors: Jacob Philips, Adam Wisnewski
+# Purpose: Main driver for TravelEye. Creates the UI and calls for scans
 #-------------------#
 
 import sys
