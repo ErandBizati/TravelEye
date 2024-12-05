@@ -1,7 +1,8 @@
-#---------------------------
-#File: MultipleChoiceMeny.py
-#---------------------------
-#import TestFunctions as testF
+#-------------------#
+# File: TravelEye.py #
+# Authors: Adam Wisnewski
+# Purpose: Addional UI for TravelEye.py
+#-------------------#
 
 import MultiSigDetection
 import tkinter as tk
@@ -10,14 +11,6 @@ import ast
 
 SEARCHLIST = MultiSigDetection.SEARCHLIST
 TRESHOLD = MultiSigDetection.TRESHOLD
-#inputList = []
-
-
-#if len(sys.argv) > 1:
-  # Read the argument and convert it to a list
-#  inputList = ast.literal_eval(sys.argv[1])
-
-#menu(inputList)
 
 for freq in SEARCHLIST:
   try:
