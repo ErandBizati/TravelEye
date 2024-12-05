@@ -1,5 +1,5 @@
 #-------------------#
-# File: TravelEye.py #
+# File: multipleChoiceMenu.py 
 # Authors: Adam Wisnewski
 # Purpose: Addional UI for TravelEye.py
 #-------------------#
