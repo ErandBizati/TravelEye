@@ -105,7 +105,7 @@ Here are some basic instructions and information on using TravelEye
 
 ### FAQ
 
-_How close to a device do you need to detect it? _
+_How close to a device do you need to detect it?_
 
 There is no exact range on how far TravelEye can detect, it mainly depends on the strength of the signal it is trying to detect.
 Most hidden devices put out a strong enough signal that TravelEye can detect as long as you are in the same room.
