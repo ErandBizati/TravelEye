@@ -3,6 +3,11 @@
   <img src="Images/GithubLogo.png" alt="drawing" width="400"/>
 </p>
 
+<p align="center">
+  <img src="Images/traveleyeposter.jpg" alt="TravelEye Poster" width="600"/>
+</p>
+
+
 ## About
 TravelEye is a portable device which used radio frequency detection to find hidden surveillance devices.
 This device is aimed towards travelers with any level of technical knowledge
